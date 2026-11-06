@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITI CBT Examination Portal</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col selection:bg-blue-600 selection:text-white antialiased">
+
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('registration')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+          <i class="fa-solid fa-graduation-cap text-lg"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 leading-tight">
+            ITI <span class="text-blue-600">CBT Portal</span>
+          </h1>
+          <p class="text-[11px] font-medium text-slate-500 hidden sm:block">Monthly Employability Skills Assessment</p>
+        </div>
+      </div>
+
+      <!-- Action Items -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Live Exam Timer Badge -->
+        <div id="navExamMeta" class="hidden items-center gap-3 bg-slate-100/90 py-1.5 px-3 rounded-xl border border-slate-200">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="navCandidateName" class="text-xs font-semibold text-slate-700 max-w-[110px] truncate">Candidate</span>
+          </div>
+          <span class="text-slate-300">|</span>
+          <div class="flex items-center gap-1.5 text-xs font-mono font-bold text-blue-700">
+            <i class="fa-regular fa-clock"></i>
+            <span id="navTimer">60:00</span>
+          </div>
+        </div>
+
+        <!-- Instructor Portal Button -->
+        <button id="openTeacherModalBtn" class="flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-sm transition hover:shadow-md active:scale-95">
+          <i class="fa-solid fa-user-shield text-blue-400"></i>
+          <span>Teacher Portal</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NOTIFICATION TOAST -->
+  <div id="toastNotification" class="fixed top-20 right-4 z-50 transform translate-x-full opacity-0 transition-all duration-300 pointer-events-none max-w-sm w-full">
+    <div class="bg-slate-900 text-white p-4 rounded-xl shadow-2xl border border-slate-700/80 flex items-start gap-3 pointer-events-auto">
+      <div id="toastIcon" class="text-emerald-400 text-base mt-0.5">
+        <i class="fa-solid fa-circle-check"></i>
+      </div>
+      <div class="flex-1">
+        <p id="toastMessage" class="text-xs font-medium text-slate-100 leading-snug">Action completed successfully.</p>
+      </div>
+      <button onclick="closeToast()" class="text-slate-400 hover:text-white transition text-xs">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col justify-center">
+
+    <!-- ========================================== -->
+    <!-- VIEW 1: REGISTRATION / STUDENT LOGIN       -->
+    <!-- ========================================== -->
+    <section id="viewRegistration" class="w-full max-w-xl mx-auto transition-all duration-300">
+      <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/80 overflow-hidden">
+        
+        <!-- Header Banner -->
+        <div class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 p-6 sm:p-8 text-white relative">
+          <div class="relative z-10">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white/10 backdrop-blur-md border border-white/15 text-blue-200 mb-3">
+              <i class="fa-solid fa-bolt text-amber-400"></i> Monthly CBT Examination
+            </span>
+            <h2 class="text-xl sm:text-2xl font-bold tracking-tight">Trainee Examination Portal</h2>
+            <p class="text-xs sm:text-sm text-blue-200/80 mt-1">Select your exam month and enter your authentic ITI details to start.</p>
+          </div>
+          <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+        </div>
+
+        <!-- Form -->
+        <form id="traineeLoginForm" class="p-6 sm:p-8 space-y-4">
+          <!-- Month & Unit in One Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Exam Month *</label>
+              <select id="regMonth" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none bg-slate-50/50 hover:bg-white focus:bg-white transition">
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November" selected>November</option>
+                <option value="December">December</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Unit (Strictly 1 to 5) *</label>
+              <select id="regUnit" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none bg-slate-50/50 hover:bg-white focus:bg-white transition">
+                <option value="Unit 1">Unit 1</option>
+                <option value="Unit 2">Unit 2</option>
+                <option value="Unit 3">Unit 3</option>
+                <option value="Unit 4">Unit 4</option>
+                <option value="Unit 5">Unit 5</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Full Name -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Trainee Full Name *</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-sm">
+                <i class="fa-regular fa-user"></i>
+              </span>
+              <input type="text" id="regName" required placeholder="e.g. Ramesh Sahoo"
+                class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none transition bg-slate-50/50 hover:bg-white focus:bg-white">
+            </div>
+          </div>
+
+          <!-- Reg No & Roll No -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Registration No. *</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-sm">
+                  <i class="fa-regular fa-id-card"></i>
+                </span>
+                <input type="text" id="regNo" required placeholder="e.g. ITI2026/088"
+                  class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none transition bg-slate-50/50 hover:bg-white focus:bg-white">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Roll Number *</label>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-sm">
+                  <i class="fa-solid fa-hashtag"></i>
+                </span>
+                <input type="text" id="regRoll" required placeholder="e.g. 2104"
+                  class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none transition bg-slate-50/50 hover:bg-white focus:bg-white">
+              </div>
+            </div>
+          </div>
+
+          <!-- Trade & Session/Year -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Trade *</label>
+              <select id="regTrade" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none transition bg-slate-50/50 hover:bg-white focus:bg-white">
+                <option value="Fitter">Fitter</option>
+                <option value="Electrician">Electrician</option>
+                <option value="COPA">COPA (Computer Operator)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Session / Year *</label>
+              <select id="regYear" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 focus:ring-2 focus:ring-blue-600 outline-none transition bg-slate-50/50 hover:bg-white focus:bg-white">
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Rules banner -->
+          <div class="p-3.5 rounded-2xl bg-blue-50/70 border border-blue-100 flex items-start gap-2.5">
+            <i class="fa-solid fa-circle-info text-blue-600 mt-0.5 text-sm"></i>
+            <p class="text-[11px] text-blue-900 leading-relaxed font-medium">
+              Duration: <strong>1 Hour (60:00)</strong> &bull; Anti-Cheating Shuffled Order &bull; Passing Benchmark: <strong>40% (10/25)</strong>
+            </p>
+          </div>
+
+          <!-- Start Button -->
+          <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm tracking-wide shadow-lg shadow-blue-500/25 transition active:scale-[0.99] flex items-center justify-center gap-2">
+            <span>Proceed to Examination</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: CBT EXAMINATION SCREEN             -->
+    <!-- ========================================== -->
+    <section id="viewExam" class="hidden w-full transition-all duration-300">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Question Pane (8 cols) -->
+        <div class="lg:col-span-8 flex flex-col gap-4">
+          <!-- Trainee Info Bar -->
+          <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-sm border border-blue-100">
+                <i class="fa-solid fa-user"></i>
+              </div>
+              <div>
+                <p id="examTraineeName" class="text-sm font-bold text-slate-900 leading-none">Trainee Name</p>
+                <p class="text-xs text-slate-500 mt-1">
+                  Roll: <span id="examRollNo" class="font-semibold text-slate-700 font-mono">--</span> &bull;
+                  <span id="examTradeBadge" class="font-semibold text-blue-600">--</span> &bull;
+                  <span id="examYearBadge" class="font-semibold text-indigo-600">--</span> &bull;
+                  <span id="examUnitBadge" class="font-semibold text-emerald-600">--</span> &bull;
+                  <span id="examMonthBadge" class="font-semibold text-amber-600">--</span>
+                </p>
+              </div>
+            </div>
+
+            <!-- Timer Widget -->
+            <div class="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl font-mono text-sm font-bold shadow-xs">
+              <i class="fa-regular fa-clock text-amber-400 animate-spin" style="animation-duration: 4s;"></i>
+              <span id="examTimerDisplay">60:00</span>
+            </div>
+          </div>
+
+          <!-- Question Body Card -->
+          <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 flex flex-col justify-between min-h-[460px]">
+            <div>
+              <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-700 font-bold text-xs border border-blue-200">
+                  Question <span id="currentQDisplayNum">1</span> of <span id="totalQDisplayNum">25</span>
+                </span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  +1.00 Mark
+                </span>
+              </div>
+
+              <!-- Question Description -->
+              <h3 id="currentQuestionText" class="text-base sm:text-lg font-semibold text-slate-900 leading-relaxed mb-6">
+                Loading question...
+              </h3>
+
+              <!-- Options Grid (A, B, C, D) -->
+              <div id="optionsContainer" class="space-y-3">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+
+            <!-- Question Controls -->
+            <div class="pt-8 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 mt-6">
+              <button id="clearAnswerBtn" type="button" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 transition">
+                <i class="fa-solid fa-eraser mr-1"></i> Clear Selection
+              </button>
+
+              <div class="flex items-center gap-2.5">
+                <button id="prevQuestionBtn" type="button" class="px-5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition">
+                  <i class="fa-solid fa-arrow-left mr-1.5"></i> Previous
+                </button>
+                <button id="nextQuestionBtn" type="button" class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition">
+                  <span>Next Question</span> <i class="fa-solid fa-arrow-right ml-1.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Palette & Final Submit (4 cols) -->
+        <div class="lg:col-span-4 flex flex-col gap-4">
+          <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900 mb-1 flex items-center justify-between">
+              <span>Question Palette</span>
+              <span id="paletteTotalHeader" class="text-xs font-medium text-slate-400">25 Total</span>
+            </h4>
+            <p class="text-xs text-slate-500 mb-4">Click question number to navigate instantly.</p>
+
+            <!-- Grid Buttons -->
+            <div id="questionPaletteGrid" class="grid grid-cols-5 gap-2.5 mb-6 max-h-[300px] overflow-y-auto pr-1">
+              <!-- Rendered via JS -->
+            </div>
+
+            <div class="space-y-2 pt-4 border-t border-slate-100 text-xs text-slate-600">
+              <div class="flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                  <span class="w-3.5 h-3.5 rounded-md bg-emerald-600"></span> Answered
+                </span>
+                <span id="legendAnsweredCount" class="font-bold text-emerald-700">0</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span class="flex items-center gap-2">
+                  <span class="w-3.5 h-3.5 rounded-md bg-slate-100 border border-slate-300"></span> Unanswered
+                </span>
+                <span id="legendUnansweredCount" class="font-bold text-slate-600">0</span>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button id="submitExamDirectBtn" type="button" class="w-full mt-6 py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs tracking-wider uppercase shadow-lg shadow-emerald-600/20 transition flex items-center justify-center gap-2">
+              <i class="fa-solid fa-paper-plane"></i> Final Submit Test
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 3: RESULT & SCORE CARD                -->
+    <!-- ========================================== -->
+    <section id="viewResult" class="hidden w-full max-w-3xl mx-auto transition-all duration-300">
+      <div class="bg-white rounded-3xl shadow-xl border border-slate-200/80 overflow-hidden">
+        
+        <div id="resultBanner" class="p-8 text-center text-white relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-800">
+          <div class="relative z-10 max-w-md mx-auto">
+            <div class="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md mx-auto flex items-center justify-center text-3xl mb-4 text-white border border-white/20">
+              <i class="fa-solid fa-award"></i>
+            </div>
+            <h2 id="resultStatusText" class="text-2xl font-black tracking-tight">Examination Completed!</h2>
+            <p class="text-xs text-white/80 mt-1">Your responses have been successfully recorded in the portal ledger.</p>
+
+            <div class="mt-6 inline-flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 px-6 py-3 rounded-2xl">
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-white/70">Total Score</p>
+                <p class="text-2xl font-black font-mono"><span id="resScore">0</span> / <span id="resTotalQ">25</span></p>
+              </div>
+              <span class="h-8 w-px bg-white/20"></span>
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-white/70">Percentage</p>
+                <p id="resPercentage" class="text-2xl font-black font-mono">0%</p>
+              </div>
+              <span class="h-8 w-px bg-white/20"></span>
+              <div>
+                <p class="text-[10px] font-bold uppercase tracking-wider text-white/70">Status</p>
+                <p id="resGradeBadge" class="text-sm font-extrabold px-2.5 py-0.5 rounded-lg bg-emerald-500/40 text-white">PASSED</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 sm:p-8">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 mb-6 text-xs">
+            <div>
+              <span class="text-slate-400 block font-medium">Candidate</span>
+              <span id="resName" class="font-bold text-slate-800 text-sm">--</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block font-medium">Roll & Reg No</span>
+              <span id="resRoll" class="font-bold text-slate-800 text-sm font-mono">--</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block font-medium">Trade & Year</span>
+              <span id="resTradeYear" class="font-bold text-slate-800">--</span>
+            </div>
+            <div>
+              <span class="text-slate-400 block font-medium">Exam Month & Unit</span>
+              <span id="resMonthUnit" class="font-bold text-slate-800">--</span>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+            <button id="toggleDetailedAnswersBtn" type="button" class="px-5 py-2.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold transition flex items-center gap-2 border border-blue-200">
+              <i class="fa-solid fa-list-check"></i>
+              <span>View Answer Key & Review</span>
+            </button>
+            <button onclick="switchView('registration')" type="button" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition flex items-center gap-2">
+              <i class="fa-solid fa-rotate-right"></i>
+              <span>Return to Login</span>
+            </button>
+          </div>
+
+          <!-- Answer Key Review List -->
+          <div id="detailedReviewContainer" class="hidden space-y-4 pt-6 border-t border-slate-200">
+            <h4 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-regular fa-circle-question text-blue-600"></i> Detailed Question-by-Question Review
+            </h4>
+            <div id="detailedReviewList" class="space-y-3">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- VIEW 4: TEACHER / INSTRUCTOR PORTAL        -->
+    <!-- ========================================== -->
+    <section id="viewTeacherDashboard" class="hidden w-full transition-all duration-300">
+      
+      <!-- Top Instructor Bar -->
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-3 rounded-full bg-blue-600"></span>
+            <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">Instructor Examination Portal</h2>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">Filter by Month, manage 1st & 2nd Year Question Banks, and export marksheet records.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button id="exportCsvBtn" type="button" class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-sm flex items-center gap-2">
+            <i class="fa-solid fa-file-excel"></i> Export Marksheet (.CSV)
+          </button>
+          <button onclick="switchView('registration')" type="button" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition flex items-center gap-2">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i> Exit Portal
+          </button>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="flex items-center gap-2 border-b border-slate-200 pb-3 mb-6">
+        <button id="tabScoresBtn" class="px-4 py-2 rounded-xl text-xs font-bold transition bg-blue-900 text-white shadow-sm">
+          <i class="fa-solid fa-table-list mr-1.5"></i> Student Marks Ledger (<span id="totalRecordsBadge">0</span>)
+        </button>
+        <button id="tabAnalyticsBtn" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition">
+          <i class="fa-solid fa-chart-pie mr-1.5"></i> Monthly Analytics
+        </button>
+        <button id="tabQuestionBankBtn" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition">
+          <i class="fa-solid fa-sliders mr-1.5"></i> Question Bank Manager
+        </button>
+      </div>
+
+      <!-- TAB 1: MARKSHEET LEDGER -->
+      <div id="panelScores" class="space-y-4">
+        <!-- Filter Toolbar -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center gap-2 flex-1 min-w-[220px]">
+            <div class="relative w-full max-w-sm">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input type="text" id="adminSearchInput" placeholder="Search by name, roll, reg no..."
+                class="w-full pl-9 pr-3 py-2 rounded-xl border border-slate-300 text-xs font-medium focus:ring-2 focus:ring-blue-600 outline-none">
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Month Filter -->
+            <select id="filterMonth" class="px-3 py-2 rounded-xl border border-slate-300 font-bold text-amber-700 bg-white outline-none">
+              <option value="ALL">All Months</option>
+              <option value="January">January</option>
+              <option value="February">February</option>
+              <option value="March">March</option>
+              <option value="April">April</option>
+              <option value="May">May</option>
+              <option value="June">June</option>
+              <option value="July">July</option>
+              <option value="August">August</option>
+              <option value="September">September</option>
+              <option value="October">October</option>
+              <option value="November">November</option>
+              <option value="December">December</option>
+            </select>
+
+            <!-- Trade Filter -->
+            <select id="filterTrade" class="px-3 py-2 rounded-xl border border-slate-300 font-semibold text-slate-700 bg-white outline-none">
+              <option value="ALL">All Trades</option>
+              <option value="Fitter">Fitter</option>
+              <option value="Electrician">Electrician</option>
+              <option value="COPA">COPA</option>
+            </select>
+
+            <!-- Year Filter -->
+            <select id="filterYear" class="px-3 py-2 rounded-xl border border-slate-300 font-semibold text-slate-700 bg-white outline-none">
+              <option value="ALL">All Years</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+            </select>
+
+            <!-- Unit Filter -->
+            <select id="filterUnit" class="px-3 py-2 rounded-xl border border-slate-300 font-semibold text-slate-700 bg-white outline-none">
+              <option value="ALL">All Units</option>
+              <option value="Unit 1">Unit 1</option>
+              <option value="Unit 2">Unit 2</option>
+              <option value="Unit 3">Unit 3</option>
+              <option value="Unit 4">Unit 4</option>
+              <option value="Unit 5">Unit 5</option>
+            </select>
+
+            <!-- Clear All Student Records Button -->
+            <button id="clearAllRecordsBtn" type="button" class="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold transition flex items-center gap-1.5 shadow-xs">
+              <i class="fa-solid fa-trash-can"></i> Clear All Records
+            </button>
+          </div>
+        </div>
+
+        <!-- Ledger Table -->
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 border-b border-slate-200 font-bold text-slate-500 uppercase tracking-wider">
+                <tr>
+                  <th class="py-3.5 px-4">Time</th>
+                  <th class="py-3.5 px-4">Month</th>
+                  <th class="py-3.5 px-4">Trainee Name</th>
+                  <th class="py-3.5 px-4">Roll No</th>
+                  <th class="py-3.5 px-4">Reg No</th>
+                  <th class="py-3.5 px-4">Trade</th>
+                  <th class="py-3.5 px-4">Year</th>
+                  <th class="py-3.5 px-4">Unit</th>
+                  <th class="py-3.5 px-4 text-center">Score</th>
+                  <th class="py-3.5 px-4 text-center">Percentage</th>
+                  <th class="py-3.5 px-4 text-center">Status</th>
+                  <th class="py-3.5 px-4 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody id="traineeTableBody" class="divide-y divide-slate-100 font-medium text-slate-700">
+                <!-- Injected via JavaScript -->
+              </tbody>
+            </table>
+          </div>
+          <div id="tableEmptyState" class="hidden p-12 text-center text-slate-400">
+            <i class="fa-solid fa-inbox text-4xl mb-2 text-slate-300"></i>
+            <p class="text-sm font-semibold">No student records match the selected month/filters.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PROGRESS & MONTHLY ANALYTICS -->
+      <div id="panelAnalytics" class="hidden space-y-6">
+        <!-- Overview Stats Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
+            <span class="text-slate-400 text-xs font-semibold uppercase">Total Students Tested</span>
+            <p id="statTotalSubmissions" class="text-2xl font-black text-slate-900 mt-1">0</p>
+            <span class="text-[11px] text-blue-600 font-medium">Logged in portal</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
+            <span class="text-slate-400 text-xs font-semibold uppercase">Batch Average Score</span>
+            <p id="statAvgScore" class="text-2xl font-black text-slate-900 mt-1">0.0</p>
+            <span id="statAvgPercentage" class="text-[11px] text-emerald-600 font-medium">0% Avg</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
+            <span class="text-slate-400 text-xs font-semibold uppercase">Batch Pass Rate</span>
+            <p id="statPassRate" class="text-2xl font-black text-emerald-600 mt-1">0%</p>
+            <span class="text-[11px] text-slate-500 font-medium">Passing benchmark: 40%</span>
+          </div>
+          <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200/80">
+            <span class="text-slate-400 text-xs font-semibold uppercase">Remedial Attention Needed</span>
+            <p id="statRemedialCount" class="text-2xl font-black text-rose-600 mt-1">0</p>
+            <span class="text-[11px] text-rose-500 font-medium">Students scored &lt; 40%</span>
+          </div>
+        </div>
+
+        <!-- Monthly Breakdown & Trade Progress -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-layer-group text-blue-600"></i> Trade-Wise Performance (Active Month)
+            </h4>
+            <div id="tradeProgressContainer" class="space-y-4">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-trophy text-amber-500"></i> Top 5 Performers Leaderboard
+            </h4>
+            <div id="topPerformersList" class="space-y-2.5">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 3: QUESTION BANK MANAGER -->
+      <div id="panelQuestionBank" class="hidden space-y-4">
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Curriculum Question Bank Manager</h3>
+            <p class="text-xs text-slate-500">All additions & deletions are saved permanently in browser storage.</p>
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Year Switcher -->
+            <div class="bg-slate-100 p-1 rounded-xl flex items-center gap-1 border border-slate-200">
+              <button id="btnBankYear1" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-900 shadow-xs transition">
+                1st Year (<span id="countYear1Qs">0</span>)
+              </button>
+              <button id="btnBankYear2" class="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition">
+                2nd Year (<span id="countYear2Qs">0</span>)
+              </button>
+            </div>
+
+            <!-- Clear All Questions in current year -->
+            <button id="clearAllBankQsBtn" class="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5">
+              <i class="fa-solid fa-trash-can"></i> Clear All in <span id="clearYearNameBadge">1st Year</span>
+            </button>
+
+            <!-- AI Smart Bulk Paste -->
+            <button id="openBulkPasteModalBtn" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-xs font-bold shadow-sm transition flex items-center gap-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Smart Paste (Bulk)
+            </button>
+          </div>
+        </div>
+
+        <!-- Question List Container -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+            <span class="text-xs font-bold text-slate-700 uppercase tracking-wide">
+              Active Bank: <span id="activeBankTitle" class="text-blue-600">1st Year</span>
+            </span>
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+              Permanent Local Storage
+            </span>
+          </div>
+
+          <div id="bankQuestionsList" class="space-y-3 max-h-[560px] overflow-y-auto pr-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL: TEACHER AUTHENTICATION (PIN UNLOCK) -->
+  <!-- ========================================== -->
+  <div id="teacherAuthModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-sm w-full p-6 text-center transform scale-95 transition-transform duration-200">
+      
+      <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 mx-auto flex items-center justify-center text-xl mb-3 border border-blue-100">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h3 class="text-base font-bold text-slate-900">Teacher Portal Authentication</h3>
+      <p class="text-xs text-slate-500 mt-1">Enter instructor passcode to continue.</p>
+
+      <form id="teacherAuthForm" class="mt-4 space-y-3">
+        <input type="password" id="teacherPinInput" autocomplete="off" required placeholder="Enter Secret Passcode"
+          class="w-full text-center tracking-widest text-sm font-bold py-2.5 px-4 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+        
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeTeacherModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+            Cancel
+          </button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm">
+            Unlock
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL: AI SMART BULK MCQ PARSER / IMPORTER -->
+  <!-- ========================================== -->
+  <div id="bulkPasteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm transition-opacity duration-200 opacity-0 pointer-events-none">
+    <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-2xl w-full p-6 sm:p-8 flex flex-col max-h-[90vh] transform scale-95 transition-transform duration-200">
+      
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg border border-emerald-100">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">AI Smart Bulk MCQ Importer</h3>
+            <p class="text-xs text-slate-500">Paste your questions with A, B, C, D choices and bold answers.</p>
+          </div>
+        </div>
+        <button onclick="closeBulkModal()" class="text-slate-400 hover:text-slate-600 text-base">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="my-4 flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200/80 text-xs">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-700">Import Directly Into:</span>
+          <select id="bulkTargetYearSelect" class="py-1.5 px-3 rounded-lg border border-slate-300 font-bold bg-white text-blue-700 outline-none">
+            <option value="1st Year">1st Year Question Bank</option>
+            <option value="2nd Year">2nd Year Question Bank</option>
+          </select>
+        </div>
+        <span class="text-[11px] font-semibold text-emerald-600 flex items-center gap-1">
+          <i class="fa-solid fa-circle-check"></i> Supports Bold **Option** & Answer: B
+        </span>
+      </div>
+
+      <div class="flex-1 min-h-[220px] flex flex-col">
+        <label class="block text-xs font-bold text-slate-700 mb-1.5">Paste Questions Text (Up to 25+):</label>
+        <textarea id="bulkPasteTextarea" rows="10" placeholder="1. What is workplace integrity?&#10;A) Working alone&#10;B) **Demonstrating honesty and reliability**&#10;C) Ignoring feedback&#10;D) Arriving late&#10;Answer: B&#10;&#10;2. Which file format is standard for a resume?&#10;A) .exe&#10;B) .txt&#10;C) .pdf&#10;D) .zip&#10;Answer: C"
+          class="w-full flex-1 p-3 rounded-2xl border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-emerald-500 outline-none bg-slate-50/50 hover:bg-white focus:bg-white transition"></textarea>
+      </div>
+
+      <div id="bulkParserFeedback" class="hidden mt-3 p-3 rounded-xl text-xs font-medium"></div>
+
+      <div class="pt-4 border-t border-slate-100 flex items-center justify-between mt-4">
+        <button onclick="document.getElementById('bulkPasteTextarea').value=''" type="button" class="text-xs text-slate-500 hover:text-rose-600 font-semibold">
+          <i class="fa-solid fa-eraser mr-1"></i> Clear Text
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button onclick="closeBulkModal()" type="button" class="px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 transition">
+            Cancel
+          </button>
+          <button id="executeBulkImportBtn" type="button" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-bolt"></i> Parse & Save Questions
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION CORE -->
+  <script>
+    // ==========================================
+    // 1. DATA STORAGE & INITIALIZATION
+    // ==========================================
+    // 2nd Year initial bank
+    const INITIAL_2ND_YEAR = [
+      { id: 201, question: "What are 'Future Work Skills'?", options: ["Skills limited exclusively to manual assembly line work", "Adaptable digital, analytical, and interpersonal skills needed in changing labor markets", "Traditional administrative paper filing skills", "Memorization of fixed operational rules"], correct: 1 },
+      { id: 202, question: "Why is continuous learning (upskilling) essential in the modern workforce?", options: ["Job descriptions never change over time", "Technological advancements continuously alter job roles and required competencies", "To avoid completing basic education", "To eliminate the need for collaboration"], correct: 1 },
+      { id: 203, question: "What defines the 'Gig Economy'?", options: ["Guaranteed permanent public-sector positions", "A labor market based on short-term contracts, freelance projects, and flexible tasks", "Traditional long-term family-run businesses", "Unpaid voluntary community organizations"], correct: 1 },
+      { id: 204, question: "What is a primary advantage of platform or gig work?", options: ["Lifelong pension and retirement guarantees", "Flexibility in setting working hours and selecting projects", "Absence of professional responsibilities", "Guaranteed corporate equity shares"], correct: 1 },
+      { id: 205, question: "What challenge is frequently associated with freelance and gig work?", options: ["Inflexible schedules", "Fluctuating monthly earnings and lack of employer-paid benefits", "Excessive paperwork for leave approval", "Mandatory office attendance"], correct: 1 },
+      { id: 206, question: "What is the essential first step when drafting a Self-Employment Plan?", options: ["Immediately renting physical office space", "Conducting market research and analyzing customer demand", "Applying for large commercial bank loans", "Hiring a full team of staff"], correct: 1 },
+      { id: 207, question: "What is the primary purpose of 'Working Capital' in a business?", options: ["Purchasing heavy immovable machinery", "Covering day-to-day operational expenses and routine costs", "Funding personal leisure travel", "Eliminating all business taxation"], correct: 1 },
+      { id: 208, question: "Why must an entrepreneur analyze their competitors?", options: ["To copy their exact advertisements", "To identify gaps in the market and offer unique value to customers", "To undercut prices to an unsustainable loss", "To report them to authorities"], correct: 1 },
+      { id: 209, question: "What should be verified before migrating to another city or state for work?", options: ["Proximity to shopping centers and cinemas", "Local weekend entertainment hotspots", "Offer authenticity, verified company credentials, and safe accommodation", "Tourist and sightseeing attractions"], correct: 2 },
+      { id: 210, question: "Which legal document is required when migrating to another country for work?", options: ["Tourist visa only", "Valid work permit or employment visa", "Library card", "Student ID card"], correct: 1 },
+      { id: 211, question: "What does the acronym SIDP stand for in professional development?", options: ["System Information Data Port", "Self / Individual Development Plan", "Standard Industrial Daily Process", "Skill Institute Development Project"], correct: 1 },
+      { id: 212, question: "What is the primary purpose of an SIDP?", options: ["To set clear career objectives, evaluate skill gaps, and define actions", "To replace employee performance reviews", "To calculate personal income tax liabilities", "To outline an employer's company policy"], correct: 0 },
+      { id: 213, question: "How frequently should an individual review and update their development plan?", options: ["Only once at retirement", "Periodically, such as every quarter or semi-annually", "Never after creating it", "Every single day"], correct: 1 },
+      { id: 214, question: "What does having a 'Green Mindset' mean?", options: ["Wearing green clothes to work", "Consciously adopting sustainable practices that reduce ecological damage", "Working strictly in agricultural farming", "Opposing the use of any technology"], correct: 1 },
+      { id: 215, question: "Which action demonstrates a 'Green Mindset' at the workplace?", options: ["Leaving air conditioners running in empty rooms", "Printing unnecessary paper copies of all files", "Conserving electricity, using digital workflows, and minimizing waste", "Promoting single-use disposable plastics"], correct: 2 },
+      { id: 216, question: "What is the main objective of 'Green Jobs'?", options: ["Maximizing industrial resource extraction", "Protecting environmental quality and fostering long-term sustainability", "Increasing dependence on fossil fuels", "Encouraging unplanned deforestation"], correct: 1 },
+      { id: 217, question: "How does adopting sustainable practices benefit businesses over time?", options: ["Increases operational waste", "Lowers long-term resource costs and enhances environmental compliance", "Eliminates the need to follow laws", "Guarantees an immediate 100% tax exemption"], correct: 1 },
+      { id: 218, question: "What is the primary purpose of Family Engagement in vocational training programs?", options: ["Requiring parents to enforce institute rules", "Helping families understand career paths to build a strong support system", "Mailing daily attendance reports to guardians", "Collecting additional institutional fees"], correct: 1 },
+      { id: 219, question: "How does family support impact a job seeker’s mindset?", options: ["It increases confusion about career steps", "It boosts confidence and lowers stress during job search periods", "It guarantees automatic job offers", "It prevents candidates from moving forward"], correct: 1 },
+      { id: 220, question: "What is the most effective approach to explain a career pathway to family members?", options: ["Avoiding conversations about work entirely", "Sharing verified information on industry prospects, training, and earnings", "Making unrealistic financial promises", "Dismissing their concerns as invalid"], correct: 1 },
+      { id: 221, question: "How should a candidate respond if family members express hesitation about job migration?", options: ["Stop communicating and ignore their concerns", "Relocate secretly without informing them", "Transparently share verified company details, safety arrangements, and living plans", "Decline the job offer immediately"], correct: 2 },
+      { id: 222, question: "Why is family involvement valuable when launching a self-employment venture?", options: ["To manage daily technical operations directly", "To gain early moral support, trusted feedback, and emotional stability", "To transfer all financial liabilities onto family members", "To avoid maintaining formal accounting records"], correct: 1 },
+      { id: 223, question: "What is a major benefit of discussing financial literacy with one's family?", options: ["Keeping income entirely hidden from dependents", "Creating realistic household budgets and structured savings goals", "Encouraging unplanned discretionary spending", "Increasing unnecessary household borrowing"], correct: 1 },
+      { id: 224, question: "What should a candidate do when their family prefers a traditional job over an emerging digital career?", options: ["Argue without showing proof", "Present clear data regarding growth trends, credentialing, and stable opportunities", "Abandon all career aspirations", "Cut off communication with family"], correct: 1 },
+      { id: 225, question: "How does celebrating early career milestones with family strengthen long-term motivation?", options: ["It reinforces mutual trust, shared pride, and ongoing encouragement", "It causes immediate workplace complacency", "It eliminates the need for further hard work", "It distracts from future performance"], correct: 0 }
+    ];
+
+    // LocalStorage Keys
+    const KEY_1ST_YEAR = 'cbt_qbank_1st_user_v3';
+    const KEY_2ND_YEAR = 'cbt_qbank_2nd_user_v3';
+    const KEY_RECORDS  = 'cbt_student_records_v3';
+
+    // Permanent Loader (1st Year is initialized as EMPTY array [], NEVER reloaded from defaults)
+    function getStoredQuestionBanks() {
+      const stored1 = localStorage.getItem(KEY_1ST_YEAR);
+      const stored2 = localStorage.getItem(KEY_2ND_YEAR);
+
+      return {
+        // 1st Year: Always empty initially so you can add your 25 questions
+        "1st Year": stored1 !== null ? JSON.parse(stored1) : [],
+        // 2nd Year: Initialized with Module 2 & Family Engagement
+        "2nd Year": stored2 !== null ? JSON.parse(stored2) : [...INITIAL_2ND_YEAR]
+      };
+    }
+
+    let questionBanks = getStoredQuestionBanks();
+    // Save to storage immediately if first time
+    if (localStorage.getItem(KEY_1ST_YEAR) === null) {
+      localStorage.setItem(KEY_1ST_YEAR, JSON.stringify([]));
+    }
+    if (localStorage.getItem(KEY_2ND_YEAR) === null) {
+      localStorage.setItem(KEY_2ND_YEAR, JSON.stringify(INITIAL_2ND_YEAR));
+    }
+
+    let studentRecords = JSON.parse(localStorage.getItem(KEY_RECORDS)) || [];
+
+    function saveBanksToStorage() {
+      localStorage.setItem(KEY_1ST_YEAR, JSON.stringify(questionBanks["1st Year"]));
+      localStorage.setItem(KEY_2ND_YEAR, JSON.stringify(questionBanks["2nd Year"]));
+    }
+
+    function saveRecordsToStorage() {
+      localStorage.setItem(KEY_RECORDS, JSON.stringify(studentRecords));
+    }
+
+    // State Variables
+    let currentActiveTrainee = null;
+    let randomizedExamPaper = [];
+    let selectedAnswers = [];
+    let currentQuestionIndex = 0;
+    let examTimerInterval = null;
+    let timeLeftSeconds = 3600; // 1 Hour
+    let toastTimeout = null;
+    let currentBankYear = "1st Year";
+    let lastExamResult = null;
+
+    // Secret Teacher PIN (no hints in UI)
+    const SECRET_TEACHER_PIN = "Pridhi";
+
+    // ==========================================
+    // 2. TOAST SYSTEM
+    // ==========================================
+    function showToast(message, type = "success") {
+      const toast = document.getElementById('toastNotification');
+      const msgElem = document.getElementById('toastMessage');
+      const iconElem = document.getElementById('toastIcon');
+
+      clearTimeout(toastTimeout);
+      msgElem.textContent = message;
+
+      if (type === "success") {
+        iconElem.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+      } else if (type === "error") {
+        iconElem.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-400"></i>';
+      } else {
+        iconElem.innerHTML = '<i class="fa-solid fa-circle-info text-blue-400"></i>';
+      }
+
+      toast.classList.remove('translate-x-full', 'opacity-0');
+      toast.classList.add('translate-x-0', 'opacity-100');
+
+      toastTimeout = setTimeout(() => {
+        closeToast();
+      }, 2500);
+    }
+
+    function closeToast() {
+      const toast = document.getElementById('toastNotification');
+      toast.classList.add('translate-x-full', 'opacity-0');
+      toast.classList.remove('translate-x-0', 'opacity-100');
+    }
+
+    // ==========================================
+    // 3. VIEW CONTROLLER
+    // ==========================================
+    function switchView(viewName) {
+      document.getElementById('viewRegistration').classList.add('hidden');
+      document.getElementById('viewExam').classList.add('hidden');
+      document.getElementById('viewResult').classList.add('hidden');
+      document.getElementById('viewTeacherDashboard').classList.add('hidden');
+      document.getElementById('navExamMeta').classList.add('hidden');
+
+      if (viewName === 'registration') {
+        document.getElementById('viewRegistration').classList.remove('hidden');
+      } else if (viewName === 'exam') {
+        document.getElementById('viewExam').classList.remove('hidden');
+        document.getElementById('navExamMeta').classList.remove('hidden');
+      } else if (viewName === 'result') {
+        document.getElementById('viewResult').classList.remove('hidden');
+      } else if (viewName === 'teacher') {
+        document.getElementById('viewTeacherDashboard').classList.remove('hidden');
+        renderTeacherDashboard();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // 4. RANDOMIZATION & ANTI-CHEATING
+    // ==========================================
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function generateExamPaper(sourceQuestions) {
+      const shuffledQ = shuffleArray(sourceQuestions);
+
+      return shuffledQ.map((q, idx) => {
+        const mappedOptions = q.options.map((opt, origIdx) => ({
+          text: opt,
+          isCorrect: origIdx === q.correct
+        }));
+
+        const shuffledOpt = shuffleArray(mappedOptions);
+        const correctIdx = shuffledOpt.findIndex(o => o.isCorrect);
+
+        return {
+          paperIndex: idx,
+          id: q.id,
+          question: q.question,
+          options: shuffledOpt.map(o => o.text),
+          correct: correctIdx
+        };
+      });
+    }
+
+    // ==========================================
+    // 5. REGISTRATION / LOGIN LOGIC
+    // ==========================================
+    document.getElementById('traineeLoginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const month = document.getElementById('regMonth').value;
+      const unit = document.getElementById('regUnit').value;
+      const name = document.getElementById('regName').value.trim();
+      const regNo = document.getElementById('regNo').value.trim();
+      const roll = document.getElementById('regRoll').value.trim();
+      const trade = document.getElementById('regTrade').value;
+      const year = document.getElementById('regYear').value;
+
+      if (!name || !regNo || !roll || !trade || !year || !unit || !month) {
+        showToast("Please fill all required registration fields.", "error");
+        return;
+      }
+
+      // Re-read storage
+      questionBanks = getStoredQuestionBanks();
+      const activeQuestions = questionBanks[year] || [];
+
+      if (activeQuestions.length === 0) {
+        showToast(`No questions configured for ${year}. Please ask instructor to add questions.`, "error");
+        return;
+      }
+
+      currentActiveTrainee = { name, regNo, roll, trade, year, unit, month };
+      randomizedExamPaper = generateExamPaper(activeQuestions);
+      selectedAnswers = new Array(randomizedExamPaper.length).fill(null);
+
+      // Setup exam interface values
+      document.getElementById('examTraineeName').textContent = name;
+      document.getElementById('navCandidateName').textContent = name;
+      document.getElementById('examRollNo').textContent = roll;
+      document.getElementById('examTradeBadge').textContent = trade;
+      document.getElementById('examYearBadge').textContent = year;
+      document.getElementById('examUnitBadge').textContent = unit;
+      document.getElementById('examMonthBadge').textContent = month;
+
+      document.getElementById('totalQDisplayNum').textContent = randomizedExamPaper.length;
+      document.getElementById('paletteTotalHeader').textContent = `${randomizedExamPaper.length} Total`;
+
+      startExamSession();
+    });
+
+    // ==========================================
+    // 6. EXAM ENGINE & 60-MIN TIMER
+    // ==========================================
+    function startExamSession() {
+      currentQuestionIndex = 0;
+      timeLeftSeconds = 3600; // 60 minutes
+      switchView('exam');
+
+      renderPaletteGrid();
+      renderQuestion(0);
+      startExamTimer();
+      showToast("Examination started. 60-minute timer running.", "info");
+    }
+
+    function startExamTimer() {
+      clearInterval(examTimerInterval);
+      updateTimerDisplay();
+
+      examTimerInterval = setInterval(() => {
+        timeLeftSeconds--;
+        updateTimerDisplay();
+
+        if (timeLeftSeconds <= 0) {
+          clearInterval(examTimerInterval);
+          showToast("Time expired! Submitting examination automatically.", "error");
+          finalizeExamSubmission();
+        }
+      }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeftSeconds / 60);
+      const seconds = timeLeftSeconds % 60;
+      const formatted = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      document.getElementById('examTimerDisplay').textContent = formatted;
+      document.getElementById('navTimer').textContent = formatted;
+    }
+
+    function renderQuestion(index) {
+      if (index < 0 || index >= randomizedExamPaper.length) return;
+      currentQuestionIndex = index;
+      const q = randomizedExamPaper[index];
+
+      document.getElementById('currentQDisplayNum').textContent = index + 1;
+      document.getElementById('currentQuestionText').textContent = q.question;
+
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+
+      q.options.forEach((optText, optIdx) => {
+        const isSelected = selectedAnswers[index] === optIdx;
+        const optCard = document.createElement('div');
+        optCard.className = `p-4 rounded-2xl border text-xs sm:text-sm font-semibold flex items-center gap-3.5 cursor-pointer transition select-none ${
+          isSelected 
+            ? 'bg-blue-50/90 border-blue-600 text-blue-950 ring-1 ring-blue-500 shadow-xs' 
+            : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+        }`;
+
+        optCard.onclick = () => {
+          selectedAnswers[index] = optIdx;
+          renderQuestion(index);
+          updatePaletteState();
+        };
+
+        optCard.innerHTML = `
+          <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold transition ${
+            isSelected 
+              ? 'bg-blue-600 text-white shadow-xs' 
+              : 'bg-slate-100 text-slate-500 border border-slate-200'
+          }">
+            ${letters[optIdx]}
+          </div>
+          <span class="flex-1 leading-relaxed">${optText}</span>
+        `;
+        container.appendChild(optCard);
+      });
+
+      document.getElementById('prevQuestionBtn').disabled = (index === 0);
+      document.getElementById('nextQuestionBtn').innerHTML = (index === randomizedExamPaper.length - 1)
+        ? '<span>Review Paper</span> <i class="fa-solid fa-flag-checkered ml-1"></i>'
+        : '<span>Next Question</span> <i class="fa-solid fa-arrow-right ml-1"></i>';
+
+      updatePaletteState();
+    }
+
+    function renderPaletteGrid() {
+      const grid = document.getElementById('questionPaletteGrid');
+      grid.innerHTML = '';
+
+      randomizedExamPaper.forEach((_, idx) => {
+        const btn = document.createElement('button');
+        btn.id = `paletteBtn_${idx}`;
+        btn.type = 'button';
+        btn.className = 'w-full aspect-square rounded-xl text-xs font-bold flex items-center justify-center transition border bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100';
+        btn.textContent = idx + 1;
+        btn.onclick = () => renderQuestion(idx);
+        grid.appendChild(btn);
+      });
+      updatePaletteState();
+    }
+
+    function updatePaletteState() {
+      let answeredCount = 0;
+
+      randomizedExamPaper.forEach((_, idx) => {
+        const btn = document.getElementById(`paletteBtn_${idx}`);
+        if (!btn) return;
+        const isAnswered = selectedAnswers[idx] !== null;
+        const isCurrent = idx === currentQuestionIndex;
+
+        if (isAnswered) answeredCount++;
+
+        btn.className = 'w-full aspect-square rounded-xl text-xs font-bold flex items-center justify-center transition border ';
+        if (isAnswered) {
+          btn.className += 'bg-emerald-600 text-white border-emerald-600 shadow-xs ';
+        } else {
+          btn.className += 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 ';
+        }
+
+        if (isCurrent) {
+          btn.classList.add('ring-2', 'ring-blue-600', 'ring-offset-1');
+        }
+      });
+
+      document.getElementById('legendAnsweredCount').textContent = answeredCount;
+      document.getElementById('legendUnansweredCount').textContent = randomizedExamPaper.length - answeredCount;
+    }
+
+    document.getElementById('prevQuestionBtn').addEventListener('click', () => {
+      if (currentQuestionIndex > 0) renderQuestion(currentQuestionIndex - 1);
+    });
+
+    document.getElementById('nextQuestionBtn').addEventListener('click', () => {
+      if (currentQuestionIndex < randomizedExamPaper.length - 1) {
+        renderQuestion(currentQuestionIndex + 1);
+      } else {
+        showToast("You've reached the last question. Click Final Submit when done.", "info");
+      }
+    });
+
+    document.getElementById('clearAnswerBtn').addEventListener('click', () => {
+      selectedAnswers[currentQuestionIndex] = null;
+      renderQuestion(currentQuestionIndex);
+      updatePaletteState();
+    });
+
+    document.getElementById('submitExamDirectBtn').addEventListener('click', () => {
+      finalizeExamSubmission();
+    });
+
+    // ==========================================
+    // 7. SUBMISSION & RESULT GENERATION
+    // ==========================================
+    function finalizeExamSubmission() {
+      clearInterval(examTimerInterval);
+
+      let score = 0;
+      randomizedExamPaper.forEach((q, idx) => {
+        if (selectedAnswers[idx] === q.correct) score++;
+      });
+
+      const totalQ = randomizedExamPaper.length;
+      const percentage = Math.round((score / totalQ) * 100);
+      const isPassed = percentage >= 40;
+
+      const record = {
+        id: Date.now(),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' }),
+        month: currentActiveTrainee.month,
+        name: currentActiveTrainee.name,
+        roll: currentActiveTrainee.roll,
+        regNo: currentActiveTrainee.regNo,
+        trade: currentActiveTrainee.trade,
+        year: currentActiveTrainee.year,
+        unit: currentActiveTrainee.unit,
+        score: score,
+        totalQuestions: totalQ,
+        percentage: percentage,
+        status: isPassed ? 'PASS' : 'FAIL'
+      };
+
+      // Permanent Save
+      studentRecords.unshift(record);
+      saveRecordsToStorage();
+
+      lastExamResult = {
+        record: record,
+        paper: randomizedExamPaper,
+        answers: selectedAnswers
+      };
+
+      // Render Result Card
+      document.getElementById('resScore').textContent = score;
+      document.getElementById('resTotalQ').textContent = totalQ;
+      document.getElementById('resPercentage').textContent = `${percentage}%`;
+      document.getElementById('resName').textContent = currentActiveTrainee.name;
+      document.getElementById('resRoll').textContent = `${currentActiveTrainee.roll} (${currentActiveTrainee.regNo})`;
+      document.getElementById('resTradeYear').textContent = `${currentActiveTrainee.trade} - ${currentActiveTrainee.year}`;
+      document.getElementById('resMonthUnit').textContent = `${currentActiveTrainee.month} | ${currentActiveTrainee.unit}`;
+
+      const gradeBadge = document.getElementById('resGradeBadge');
+      const banner = document.getElementById('resultBanner');
+      if (isPassed) {
+        gradeBadge.textContent = 'PASSED';
+        gradeBadge.className = 'text-sm font-extrabold px-3 py-1 rounded-xl bg-emerald-500/40 text-white';
+        banner.className = 'p-8 text-center text-white relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-800';
+        document.getElementById('resultStatusText').textContent = 'Congratulations! Examination Passed';
+      } else {
+        gradeBadge.textContent = 'NEEDS IMPROVEMENT';
+        gradeBadge.className = 'text-sm font-extrabold px-3 py-1 rounded-xl bg-rose-500/40 text-white';
+        banner.className = 'p-8 text-center text-white relative overflow-hidden bg-gradient-to-br from-rose-600 to-slate-900';
+        document.getElementById('resultStatusText').textContent = 'Assessment Finished';
+      }
+
+      document.getElementById('detailedReviewContainer').classList.add('hidden');
+      switchView('result');
+      showToast("Exam successfully submitted & recorded!", "success");
+    }
+
+    // Toggle Review
+    document.getElementById('toggleDetailedAnswersBtn').addEventListener('click', () => {
+      const container = document.getElementById('detailedReviewContainer');
+      const isHidden = container.classList.contains('hidden');
+
+      if (isHidden) {
+        renderDetailedReview();
+        container.classList.remove('hidden');
+        document.getElementById('toggleDetailedAnswersBtn').innerHTML = '<i class="fa-solid fa-eye-slash"></i> Hide Answer Key';
+      } else {
+        container.classList.add('hidden');
+        document.getElementById('toggleDetailedAnswersBtn').innerHTML = '<i class="fa-solid fa-list-check"></i> View Answer Key & Review';
+      }
+    });
+
+    function renderDetailedReview() {
+      const list = document.getElementById('detailedReviewList');
+      list.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+
+      lastExamResult.paper.forEach((q, idx) => {
+        const userChoice = lastExamResult.answers[idx];
+        const isCorrect = userChoice === q.correct;
+        const isSkipped = userChoice === null;
+
+        const card = document.createElement('div');
+        card.className = `p-4 rounded-2xl border text-xs leading-relaxed ${
+          isCorrect ? 'bg-emerald-50/50 border-emerald-200' : (isSkipped ? 'bg-slate-50 border-slate-200' : 'bg-rose-50/50 border-rose-200')
+        }`;
+
+        let statusText = isCorrect 
+          ? '<span class="text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md"><i class="fa-solid fa-check"></i> Correct</span>'
+          : (isSkipped ? '<span class="text-[11px] font-bold text-slate-600 bg-slate-200 px-2 py-0.5 rounded-md">Not Answered</span>' : '<span class="text-[11px] font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-md"><i class="fa-solid fa-xmark"></i> Incorrect</span>');
+
+        card.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-slate-500">Q${idx + 1}.</span>
+            ${statusText}
+          </div>
+          <p class="font-semibold text-slate-800 text-sm mb-3">${q.question}</p>
+          <div class="space-y-1">
+            <p class="${userChoice !== null && !isCorrect ? 'text-rose-700 font-bold' : 'text-slate-600'}">
+              Your Choice: ${userChoice !== null ? `${letters[userChoice]}) ${q.options[userChoice]}` : '<i>Skipped</i>'}
+            </p>
+            <p class="text-emerald-800 font-bold">
+              Correct Answer: ${letters[q.correct]}) ${q.options[q.correct]}
+            </p>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // 8. TEACHER PORTAL & AUTHENTICATION
+    // ==========================================
+    const teacherModal = document.getElementById('teacherAuthModal');
+    const teacherPinInput = document.getElementById('teacherPinInput');
+
+    document.getElementById('openTeacherModalBtn').addEventListener('click', () => {
+      teacherPinInput.value = '';
+      teacherModal.classList.remove('opacity-0', 'pointer-events-none');
+      teacherModal.querySelector('div').classList.remove('scale-95');
+      teacherPinInput.focus();
+    });
+
+    function closeTeacherModal() {
+      teacherModal.classList.add('opacity-0', 'pointer-events-none');
+      teacherModal.querySelector('div').classList.add('scale-95');
+      teacherPinInput.value = '';
+    }
+
+    document.getElementById('teacherAuthForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (teacherPinInput.value.trim() === SECRET_TEACHER_PIN) {
+        closeTeacherModal();
+        switchView('teacher');
+        showToast("Teacher Portal Unlocked", "success");
+      } else {
+        showToast("Incorrect Passcode. Access Denied.", "error");
+        teacherPinInput.value = '';
+        teacherPinInput.focus();
+      }
+    });
+
+    // Sub-Tabs
+    const tabScoresBtn = document.getElementById('tabScoresBtn');
+    const tabAnalyticsBtn = document.getElementById('tabAnalyticsBtn');
+    const tabQuestionBankBtn = document.getElementById('tabQuestionBankBtn');
+
+    const panelScores = document.getElementById('panelScores');
+    const panelAnalytics = document.getElementById('panelAnalytics');
+    const panelQuestionBank = document.getElementById('panelQuestionBank');
+
+    function selectTeacherTab(activeBtn, activePanel) {
+      [tabScoresBtn, tabAnalyticsBtn, tabQuestionBankBtn].forEach(btn => {
+        btn.className = 'px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-200 transition';
+      });
+      [panelScores, panelAnalytics, panelQuestionBank].forEach(p => p.classList.add('hidden'));
+
+      activeBtn.className = 'px-4 py-2 rounded-xl text-xs font-bold bg-blue-900 text-white shadow-sm transition';
+      activePanel.classList.remove('hidden');
+    }
+
+    tabScoresBtn.addEventListener('click', () => {
+      selectTeacherTab(tabScoresBtn, panelScores);
+      renderMarksheetTable();
+    });
+
+    tabAnalyticsBtn.addEventListener('click', () => {
+      selectTeacherTab(tabAnalyticsBtn, panelAnalytics);
+      renderAnalyticsDashboard();
+    });
+
+    tabQuestionBankBtn.addEventListener('click', () => {
+      selectTeacherTab(tabQuestionBankBtn, panelQuestionBank);
+      renderQuestionBankManager();
+    });
+
+    function renderTeacherDashboard() {
+      selectTeacherTab(tabScoresBtn, panelScores);
+      renderMarksheetTable();
+      renderAnalyticsDashboard();
+      renderQuestionBankManager();
+    }
+
+    // Ledger Filters
+    document.getElementById('adminSearchInput').addEventListener('input', renderMarksheetTable);
+    document.getElementById('filterMonth').addEventListener('change', renderMarksheetTable);
+    document.getElementById('filterTrade').addEventListener('change', renderMarksheetTable);
+    document.getElementById('filterYear').addEventListener('change', renderMarksheetTable);
+    document.getElementById('filterUnit').addEventListener('change', renderMarksheetTable);
+
+    function renderMarksheetTable() {
+      const search = document.getElementById('adminSearchInput').value.toLowerCase().trim();
+      const monthFilt = document.getElementById('filterMonth').value;
+      const tradeFilt = document.getElementById('filterTrade').value;
+      const yearFilt = document.getElementById('filterYear').value;
+      const unitFilt = document.getElementById('filterUnit').value;
+
+      const filtered = studentRecords.filter(rec => {
+        const matchesSearch = rec.name.toLowerCase().includes(search) || 
+                              rec.roll.toLowerCase().includes(search) || 
+                              rec.regNo.toLowerCase().includes(search);
+        const matchesMonth = monthFilt === 'ALL' || rec.month === monthFilt;
+        const matchesTrade = tradeFilt === 'ALL' || rec.trade === tradeFilt;
+        const matchesYear = yearFilt === 'ALL' || rec.year === yearFilt;
+        const matchesUnit = unitFilt === 'ALL' || rec.unit === unitFilt;
+        return matchesSearch && matchesMonth && matchesTrade && matchesYear && matchesUnit;
+      });
+
+      document.getElementById('totalRecordsBadge').textContent = studentRecords.length;
+      const tbody = document.getElementById('traineeTableBody');
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        document.getElementById('tableEmptyState').classList.remove('hidden');
+        return;
+      } else {
+        document.getElementById('tableEmptyState').classList.add('hidden');
+      }
+
+      filtered.forEach(rec => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+
+        let tradeBadgeClass = 'bg-blue-50 text-blue-700';
+        if (rec.trade === 'Electrician') tradeBadgeClass = 'bg-amber-50 text-amber-700';
+        if (rec.trade === 'COPA') tradeBadgeClass = 'bg-emerald-50 text-emerald-700';
+
+        tr.innerHTML = `
+          <td class="py-3.5 px-4 font-mono text-[11px] text-slate-500">${rec.timestamp}</td>
+          <td class="py-3.5 px-4 font-bold text-amber-700">${rec.month || 'N/A'}</td>
+          <td class="py-3.5 px-4 font-bold text-slate-900">${rec.name}</td>
+          <td class="py-3.5 px-4 font-mono font-semibold">${rec.roll}</td>
+          <td class="py-3.5 px-4 text-slate-500 font-mono">${rec.regNo}</td>
+          <td class="py-3.5 px-4">
+            <span class="px-2 py-0.5 rounded-md font-bold text-[10px] ${tradeBadgeClass}">${rec.trade}</span>
+          </td>
+          <td class="py-3.5 px-4 font-semibold">${rec.year}</td>
+          <td class="py-3.5 px-4 font-semibold">${rec.unit}</td>
+          <td class="py-3.5 px-4 text-center font-bold font-mono text-slate-900">${rec.score} / ${rec.totalQuestions || 25}</td>
+          <td class="py-3.5 px-4 text-center font-bold font-mono">${rec.percentage}%</td>
+          <td class="py-3.5 px-4 text-center">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+              rec.status === 'PASS' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+            }">${rec.status}</span>
+          </td>
+          <td class="py-3.5 px-4 text-center">
+            <button type="button" onclick="handleDeleteStudentRecord(event, ${rec.id})" title="Delete Trainee Entry" class="p-1.5 rounded-lg text-rose-500 hover:text-white hover:bg-rose-600 border border-rose-200 transition">
+              <i class="fa-solid fa-trash-can text-xs pointer-events-none"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Handler to delete an individual student record by ID
+    window.handleDeleteStudentRecord = function(event, recordId) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      studentRecords = studentRecords.filter(r => r.id !== recordId);
+      saveRecordsToStorage();
+      renderMarksheetTable();
+      renderAnalyticsDashboard();
+      showToast("Student entry deleted permanently.", "success");
+    };
+
+    // Handler to clear all student records at once
+    document.getElementById('clearAllRecordsBtn').addEventListener('click', () => {
+      if (studentRecords.length === 0) {
+        showToast("No student records to clear.", "info");
+        return;
+      }
+      studentRecords = [];
+      saveRecordsToStorage();
+      renderMarksheetTable();
+      renderAnalyticsDashboard();
+      showToast("All student records cleared permanently.", "info");
+    });
+
+    // Export CSV
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      if (studentRecords.length === 0) {
+        showToast("No records available to export.", "error");
+        return;
+      }
+
+      let csv = "Timestamp,Month,Trainee Name,Roll No,Registration No,Trade,Year,Unit,Score,Total,Percentage,Status\n";
+      studentRecords.forEach(r => {
+        csv += `"${r.timestamp}","${r.month || ''}","${r.name}","${r.roll}","${r.regNo}","${r.trade}","${r.year}","${r.unit}",${r.score},${r.totalQuestions || 25},${r.percentage}%,"${r.status}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `ITI_Marksheet_Monthly_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Monthly marksheet exported as CSV.");
+    });
+
+    // Analytics Dashboard
+    function renderAnalyticsDashboard() {
+      const total = studentRecords.length;
+      document.getElementById('statTotalSubmissions').textContent = total;
+
+      if (total === 0) {
+        document.getElementById('statAvgScore').textContent = '0.0';
+        document.getElementById('statAvgPercentage').textContent = '0% Avg';
+        document.getElementById('statPassRate').textContent = '0%';
+        document.getElementById('statRemedialCount').textContent = '0';
+        document.getElementById('tradeProgressContainer').innerHTML = '<p class="text-xs text-slate-400">No submission records yet.</p>';
+        document.getElementById('topPerformersList').innerHTML = '<p class="text-xs text-slate-400">No leaderboard data available.</p>';
+        return;
+      }
+
+      const totalScoreSum = studentRecords.reduce((acc, r) => acc + r.score, 0);
+      const avgScore = (totalScoreSum / total).toFixed(1);
+      const avgPct = Math.round(studentRecords.reduce((acc, r) => acc + r.percentage, 0) / total);
+      const passedCount = studentRecords.filter(r => r.status === 'PASS').length;
+      const passRate = Math.round((passedCount / total) * 100);
+      const remedialCount = studentRecords.filter(r => r.status === 'FAIL').length;
+
+      document.getElementById('statAvgScore').textContent = avgScore;
+      document.getElementById('statAvgPercentage').textContent = `${avgPct}% Avg`;
+      document.getElementById('statPassRate').textContent = `${passRate}%`;
+      document.getElementById('statRemedialCount').textContent = remedialCount;
+
+      // Trade Breakdown
+      const trades = ['Fitter', 'Electrician', 'COPA'];
+      const tradeContainer = document.getElementById('tradeProgressContainer');
+      tradeContainer.innerHTML = '';
+
+      trades.forEach(tr => {
+        const trRecords = studentRecords.filter(r => r.trade === tr);
+        const count = trRecords.length;
+        const trAvgPct = count > 0 ? Math.round(trRecords.reduce((a, b) => a + b.percentage, 0) / count) : 0;
+
+        const row = document.createElement('div');
+        row.className = 'space-y-1';
+        row.innerHTML = `
+          <div class="flex justify-between text-xs font-semibold">
+            <span class="text-slate-700">${tr} (${count} Trainees)</span>
+            <span class="text-slate-900 font-bold">${trAvgPct}% Avg</span>
+          </div>
+          <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+            <div class="bg-blue-600 h-full rounded-full transition-all duration-500" style="width: ${trAvgPct}%"></div>
+          </div>
+        `;
+        tradeContainer.appendChild(row);
+      });
+
+      // Leaderboard
+      const leaderboard = [...studentRecords].sort((a, b) => b.score - a.score).slice(0, 5);
+      const topList = document.getElementById('topPerformersList');
+      topList.innerHTML = '';
+
+      const medals = ['text-amber-500', 'text-slate-400', 'text-amber-700', 'text-blue-500', 'text-blue-500'];
+      leaderboard.forEach((lead, idx) => {
+        const item = document.createElement('div');
+        item.className = 'p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs';
+        item.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <span class="font-extrabold ${medals[idx]} w-4 text-center">#${idx + 1}</span>
+            <div>
+              <p class="font-bold text-slate-800">${lead.name} <span class="text-[10px] text-amber-600 font-semibold">(${lead.month})</span></p>
+              <p class="text-[10px] text-slate-400">Roll: ${lead.roll} &bull; ${lead.trade} (${lead.year})</p>
+            </div>
+          </div>
+          <span class="font-bold font-mono text-sm text-emerald-700">${lead.score} / ${lead.totalQuestions || 25}</span>
+        `;
+        topList.appendChild(item);
+      });
+    }
+
+    // ==========================================
+    // 9. QUESTION BANK MANAGER (PERMANENT STORAGE)
+    // ==========================================
+    const btnBankYear1 = document.getElementById('btnBankYear1');
+    const btnBankYear2 = document.getElementById('btnBankYear2');
+    const clearAllBankQsBtn = document.getElementById('clearAllBankQsBtn');
+
+    btnBankYear1.addEventListener('click', () => {
+      currentBankYear = '1st Year';
+      btnBankYear1.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-900 shadow-xs transition';
+      btnBankYear2.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+      document.getElementById('clearYearNameBadge').textContent = '1st Year';
+      renderQuestionBankManager();
+    });
+
+    btnBankYear2.addEventListener('click', () => {
+      currentBankYear = '2nd Year';
+      btnBankYear2.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-blue-900 shadow-xs transition';
+      btnBankYear1.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+      document.getElementById('clearYearNameBadge').textContent = '2nd Year';
+      renderQuestionBankManager();
+    });
+
+    // Clear All Questions in active year
+    clearAllBankQsBtn.addEventListener('click', () => {
+      questionBanks[currentBankYear] = [];
+      saveBanksToStorage();
+      renderQuestionBankManager();
+      showToast(`Cleared all questions from ${currentBankYear}. Bank is now empty.`, "info");
+    });
+
+    function renderQuestionBankManager() {
+      document.getElementById('countYear1Qs').textContent = questionBanks['1st Year'].length;
+      document.getElementById('countYear2Qs').textContent = questionBanks['2nd Year'].length;
+      document.getElementById('activeBankTitle').textContent = `${currentBankYear}`;
+
+      const list = document.getElementById('bankQuestionsList');
+      list.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      const activeQs = questionBanks[currentBankYear] || [];
+
+      if (activeQs.length === 0) {
+        list.innerHTML = `
+          <div class="py-12 text-center text-slate-400">
+            <i class="fa-solid fa-folder-open text-4xl mb-3 text-slate-300"></i>
+            <p class="text-sm font-bold text-slate-600">Question bank is currently empty (0 questions).</p>
+            <p class="text-xs text-slate-400 mt-1">Click "AI Smart Paste (Bulk)" to paste your 25 questions at once.</p>
+          </div>
+        `;
+        return;
+      }
+
+      activeQs.forEach((q, idx) => {
+        const item = document.createElement('div');
+        item.className = 'p-4 rounded-2xl border border-slate-200 text-xs hover:bg-slate-50 transition';
+        item.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-blue-700">Question ${idx + 1}</span>
+            <button type="button" class="px-2.5 py-1 rounded-lg text-rose-500 hover:text-white hover:bg-rose-600 border border-rose-200 transition font-semibold" onclick="handleDeleteQuestion(event, ${idx})">
+              <i class="fa-solid fa-trash-can mr-1 pointer-events-none"></i> Delete
+            </button>
+          </div>
+          <p class="font-medium text-slate-900 text-sm mb-3">${q.question}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+            ${q.options.map((opt, oIdx) => `
+              <div class="p-2 rounded-lg border ${oIdx === q.correct ? 'bg-emerald-50 border-emerald-300 font-bold text-emerald-900' : 'bg-white border-slate-200 text-slate-600'}">
+                ${letters[oIdx]}) ${opt}
+              </div>
+            `).join('')}
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // Direct Deletion Handler (Permanent LocalStorage Sync)
+    window.handleDeleteQuestion = function(event, index) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+
+      if (index >= 0 && index < questionBanks[currentBankYear].length) {
+        questionBanks[currentBankYear].splice(index, 1);
+        saveBanksToStorage();
+        renderQuestionBankManager();
+        showToast("Question deleted and permanently saved!", "success");
+      }
+    };
+
+    // ==========================================
+    // 10. AI SMART BULK MCQ PARSER
+    // ==========================================
+    const bulkModal = document.getElementById('bulkPasteModal');
+    const bulkTextarea = document.getElementById('bulkPasteTextarea');
+    const bulkFeedback = document.getElementById('bulkParserFeedback');
+
+    document.getElementById('openBulkPasteModalBtn').addEventListener('click', () => {
+      document.getElementById('bulkTargetYearSelect').value = currentBankYear;
+      bulkFeedback.classList.add('hidden');
+      bulkModal.classList.remove('opacity-0', 'pointer-events-none');
+      bulkModal.querySelector('div').classList.remove('scale-95');
+      bulkTextarea.focus();
+    });
+
+    function closeBulkModal() {
+      bulkModal.classList.add('opacity-0', 'pointer-events-none');
+      bulkModal.querySelector('div').classList.add('scale-95');
+      bulkTextarea.value = '';
+    }
+
+    function parseRawBulkMCQs(text) {
+      if (!text || !text.trim()) return [];
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      const parsed = [];
+      let current = null;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+
+        const qMatch = line.match(/^(?:Q\s*)?(\d+)[\.\)\:\-]\s*(.+)/i);
+        const optMatch = line.match(/^([A-Da-d])[\.\)\:\-]\s*(.+)/i);
+        const ansMatch = line.match(/^(?:Answer|Ans|Correct(?:\s*Answer)?)\s*[\:\-]\s*(.+)/i);
+
+        if (qMatch && !optMatch && !ansMatch) {
+          if (current && current.options.length >= 2) {
+            finalizeQuestion(current);
+            parsed.push(current);
+          }
+          current = {
+            question: qMatch[2].replace(/\*\*/g, '').trim(),
+            options: [],
+            explicitAnswer: null,
+            boldIndex: -1
+          };
+        } else if (optMatch && current) {
+          const rawText = optMatch[2].trim();
+          const cleanText = rawText.replace(/\*\*/g, '').trim();
+
+          if (rawText.includes('**') && current.boldIndex === -1) {
+            current.boldIndex = current.options.length;
+          }
+
+          current.options.push(cleanText);
+        } else if (ansMatch && current) {
+          current.explicitAnswer = ansMatch[1].replace(/\*\*/g, '').trim();
+        } else if (current && current.options.length === 0) {
+          current.question += " " + line.replace(/\*\*/g, '').trim();
+        }
+      }
+
+      if (current && current.options.length >= 2) {
+        finalizeQuestion(current);
+        parsed.push(current);
+      }
+
+      return parsed;
+    }
+
+    function finalizeQuestion(q) {
+      let correctIdx = 0;
+      const letters = ['A', 'B', 'C', 'D'];
+
+      if (q.explicitAnswer) {
+        const cleanAns = q.explicitAnswer.toUpperCase();
+        const letterMatch = cleanAns.match(/\b([A-D])\b/);
+        if (letterMatch) {
+          correctIdx = letters.indexOf(letterMatch[1]);
+        } else {
+          const matchIdx = q.options.findIndex(opt => cleanAns.includes(opt.toUpperCase()) || opt.toUpperCase().includes(cleanAns));
+          if (matchIdx !== -1) correctIdx = matchIdx;
+        }
+      } else if (q.boldIndex !== -1) {
+        correctIdx = q.boldIndex;
+      }
+
+      while (q.options.length < 4) {
+        q.options.push("None of the above");
+      }
+      q.options = q.options.slice(0, 4);
+      q.correct = (correctIdx >= 0 && correctIdx <= 3) ? correctIdx : 0;
+    }
+
+    document.getElementById('executeBulkImportBtn').addEventListener('click', () => {
+      const text = bulkTextarea.value.trim();
+      const targetYear = document.getElementById('bulkTargetYearSelect').value;
+
+      if (!text) {
+        showToast("Please paste question text to import.", "error");
+        return;
+      }
+
+      const results = parseRawBulkMCQs(text);
+
+      if (results.length === 0) {
+        bulkFeedback.className = "mt-3 p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-700 block";
+        bulkFeedback.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> No questions recognized. Ensure questions are numbered (e.g. 1. Question) and choices formatted A), B), C), D).';
+        return;
+      }
+
+      if (!questionBanks[targetYear]) questionBanks[targetYear] = [];
+
+      results.forEach((q, idx) => {
+        questionBanks[targetYear].push({
+          id: Date.now() + idx,
+          question: q.question,
+          options: q.options,
+          correct: q.correct
+        });
+      });
+
+      // Permanent Save
+      saveBanksToStorage();
+
+      currentBankYear = targetYear;
+      closeBulkModal();
+      renderQuestionBankManager();
+      showToast(`Successfully added ${results.length} questions to ${targetYear} permanently!`, "success");
+    });
+  </script>
+</body>
+</html>
